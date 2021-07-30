@@ -1,0 +1,50 @@
+<mvc:View controllerName="EmployeeManager.employeemanager.controller.NewEmployee"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m"
+    xmlns:f="sap.f">
+
+    <NavContainer id="navContainer">
+        <pages>
+            <f:DynamicPage id="dynamicPage" toggleHeaderOnTitleClick="{/titleClickable}" stickySubheaderProvider="NewEmployeeWizard" class="sapUiNoContentPadding" showFooter="true">
+                <f:title>
+                    <f:DynamicPageTitle>
+                        <f:heading>
+                            <Title text="Header Title"/>
+                        </f:heading>
+                    </f:DynamicPageTitle>
+                </f:title>
+                <!-- DynamicPage Header -->
+                <f:content>
+
+                    <Wizard id="NewEmployeeWizard" class="sapUiResponsivePadding--header sapUiResponsivePadding--content" complete="completedHandler" height="auto" enableBranching="true">
+
+                        <WizardStep id="employeeTypeStep" nextStep="employeeDataStep" title="{i18n>employeeTypeTitle}" icon="sap-icon://cart">
+                            <ObjectHeader title="{i18n>employeeHeader}" icon="sap-icon://cart">
+                                <attributes>
+                                    <ObjectAttribute text=""/>
+                                </attributes>
+                            </ObjectHeader>
+                        </WizardStep>
+
+                        <WizardStep id="employeeDataStep"  title="i18n>employeeDataTitle}" icon="sap-icon://cart">
+                            <ObjectHeader title="Total" number="55" numberUnit="EUR">
+                                <attributes>
+                                    <ObjectAttribute text="This is the list of items in your shopping cart"/>
+                                </attributes>
+                            </ObjectHeader>
+                        </WizardStep>                        
+
+                    </Wizard>
+                </f:content>
+                <!-- DynamicPage Footer -->
+                <f:footer>
+                    <OverflowToolbar>
+                        <ToolbarSpacer/>
+                        <Button text="{i18n>newEmployeeCancel}" class="sapUiSmallMargin" press="onCancelNewEmployee"></Button>
+                    </OverflowToolbar>
+                </f:footer>
+            </f:DynamicPage>
+        </pages>
+    </NavContainer>
+
+</mvc:View>
