@@ -13,7 +13,7 @@
         "ach": "ach",
         "dataSources": {
             "ZEMPLOYEES_SRV": {
-                "uri": "/sap/opu/odata/sap/ZEMPLOYEES_SRV",
+                "uri": "/sap/opu/odata/sap/ZEMPLOYEES_SRV/",
                 "type": "OData",
                 "settings": {
                     "odataVersion": "2.0",
@@ -71,11 +71,8 @@
                 "preload": true,
                 "settings": {
                     "defaultOperationMode": "Server",
-                    "defaultBindingMode": "TwoWay",
-                    "defaultCountMode": "Request",
-                    "refreshAfterChange": false,
-                    "useBatch": false,
-                    "defaultUpdateMethod": "Put"
+                    "defaultBindingMode": "OneWay",
+                    "defaultCountMode": "Request"
                 }
             }
         },

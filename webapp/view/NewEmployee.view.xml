@@ -59,22 +59,22 @@
                                     </f:SimpleForm>
                                 </WizardStep>
 
-                                <!-- Step 3 Employee AdditionalData-->
+                                <!-- Step 3 Employee AdditionalData -->
 
                                 <WizardStep id="employeeAditionalDataStep" title="{i18n>employeeAditionalDataTitle}" validated="true">
                                     <MessageStrip class="sapUiSmallMarginBottom" text="{i18n>employeeAdditionalDataHeader}" showIcon="true"/>
                                     <Label text="{i18n>EmployeeComment}" width="100%"></Label>
                                     <TextArea value="{/Comments}" width="100%"></TextArea>
-                                    <UploadCollection id="UploadCollection" maximumFilenameLength="55" maximumFileSize="10" multiple="true" sameFilenameAllowed="true" instantUpload="false" uploadUrl="/sap/opu/odata/sap/ZEMPLOYEES_SRV/Attachments" change="onEmployeeFileChange" uploadComplete="onEmployeeFileBeforeUploadCompleted" beforeUploadStarts="onEmployeeFileBeforeUploadStart" fileDeleted="onEmployeeFileDeleted" noDataDescription="{i18n>Arrastrarficheros}" />
+                                    <UploadCollection id="UploadCollection" maximumFilenameLength="55" maximumFileSize="10" multiple="true" sameFilenameAllowed="true" instantUpload="false" uploadUrl="/sap/opu/odata/sap/ZEMPLOYEES_SRV/Attachments" 
+                                                    change="onEmployeeFileChange" uploadComplete="onEmployeeFileBeforeUploadCompleted" beforeUploadStarts="onEmployeeFileBeforeUploadStart" fileDeleted="onEmployeeFileDeleted" 
+                                                    noDataDescription="{i18n>fileUploadFile}" />
                                 </WizardStep>
-
-
                             </Wizard>
                         </content>
                         <footer>
                             <OverflowToolbar>
                                 <ToolbarSpacer/>
-                                <Button text="{i18n>newEmployeeCancel}" class="sapUiSmallMargin" press="onCancelNewEmployee"></Button>
+                                <Button text="{i18n>newEmployeeCancel}" class="sapUiSmallMargin" press="onCancelNewEmployee"/>
                             </OverflowToolbar>
                         </footer>
                     </Page>
@@ -83,8 +83,8 @@
                         <footer>
                             <Toolbar>
                                 <ToolbarSpacer></ToolbarSpacer>
-                                <Button text="{i18n>NewEmployeeDataSave}" press="onSaveNewEmployee"></Button>
-                                <Button text="{i18n>newEmployeeCancel}" press="onCancelNewEmployee"></Button>
+                                <Button id="NewEmployeeDataSave" text="{i18n>newEmployeeDataSave}" press="onSaveNewEmployee"></Button>
+                                <Button id="NewEmployeeCancel" text="{i18n>newEmployeeCancel}" press="onCancelNewEmployee"></Button>
                             </Toolbar>
                         </footer>
                     </Page>

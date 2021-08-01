@@ -1,14 +1,14 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
-    "sap/ui/core/routing/History",
-    "sap/m/MessageBox"
+    "sap/m/MessageBox",
+    "sap/m/UploadCollectionParameter"
 ],
 	/**
 	 * @param {typeof sap.ui.core.mvc.Controller} Controller
-     * @param {typeof sap.ui.core.routing.History} History
      * @param {typeof sap.m.MessageBox} MessageBox
+     * @param {typeof sap.m.UploadCollectionParameter} UploadCollectionParameter
 	 */
-    function (Controller, History, MessageBox) {
+    function (Controller, MessageBox, UploadCollectionParameter) {
         "use strict";
 
         function onInit() {
@@ -17,26 +17,33 @@ sap.ui.define([
         function onBeforeRendering() {
 
             var oView = this.getView();
-            var oJSONModelEmpl = new sap.ui.model.json.JSONModel();
+            var oJSONModelEmpl = new sap.ui.model.json.JSONModel({});
             oView.setModel(oJSONModelEmpl);
             this._modelEmployee = oJSONModelEmpl;
+
+            var wizard = this.byId("NewEmployeeWizard");
+            var employeeTypeStep = wizard.getSteps()[0];
+            wizard.discardProgress(employeeTypeStep);
+            wizard.goToStep(employeeTypeStep);
+            employeeTypeStep.setValidated(false);
 
         };
 
         function onCancelNewEmployee() {
 
-            MessageBox.confirm(this.getView().getModel("i18n").getResourceBundle().getText("confirmCancelNewEmployee"), {
+            MessageBox.confirm(this.getView().getModel("i18n").getResourceBundle().getText("NewEmployeeConfirmCancel"), {
                 onClose: function (oAction) {
                     if (oAction === "OK") {
-                        var oHistory = History.getInstance();
-                        var sPreviousHash = oHistory.getPreviousHash();
+                        var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+                        oRouter.navTo("RouteMenu", {}, true);
+                        // var oHistory = History.getInstance();
+                        // var sPreviousHash = oHistory.getPreviousHash();
 
-                        if (sPreviousHash !== undefined) {
-                            window.history.go(-1);
-                        } else {
-                            var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-                            oRouter.navTo("RouteMenu", true);
-                        }
+                        // if (sPreviousHash !== undefined) {
+                        //     window.history.go(-1);
+                        // } else {
+
+                        // }
                     }
 
                 }.bind(this)
@@ -76,9 +83,12 @@ sap.ui.define([
             //  Si estamos en el paso 1 y pulsamos un botón, pasamos al paso 2
             var wizard = this.byId("NewEmployeeWizard");
             var employeeTypeStep = this.byId("employeeTypeStep").getId();
+            var employeeDataStep = this.byId("employeeDataStep").getId();
             var curr_Stem = wizard.getCurrentStep();
             if (wizard.getCurrentStep() === employeeTypeStep) {
                 wizard.nextStep();
+            } else {
+                wizard.goToStep(employeeDataStep);
             }
         };
 
@@ -127,7 +137,7 @@ sap.ui.define([
             if (employeeObject.LastName) {
                 employeeObject._objEmployeeData.LastNameStatus = "None";
             } else {
-                employeeObject._objEmployeeData.LastNametatus = "Error";
+                employeeObject._objEmployeeData.LastNameStatus = "Error";
                 employeeDataStatusOK = false;
             };
             if (employeeObject.CreationDate) {
@@ -185,7 +195,7 @@ sap.ui.define([
                     }
                 } else {
                     var wizard = this.byId("NewEmployeeWizard");
-                    this.wizard.goToStep(this.byId("dataEmployeeStep"));
+                    wizard.goToStep(this.byId("dataEmployeeStep"));
                 }
             }.bind(this));
         };
@@ -193,40 +203,36 @@ sap.ui.define([
         function onEmployeeFileChange(oEvent) {
             let oUploadCollection = oEvent.getSource();
 
-                //Header Token CSRF - Cross-site request forgery
-                let oCustomerHeaderToken = new sap.m.UploadCollectionParameter({
-                    name: "x-csrf-token",
-                    value: this.getView().getModel("incidenceModel").getSecurityToken()
-                });
-                oUploadCollection.addHeaderParameter(oCustomerHeaderToken);
+            //Header Token CSRF - Cross-site request forgery
+            let oCustomerHeaderToken = new sap.m.UploadCollectionParameter({
+                name: "x-csrf-token",
+                value: this.getView().getModel("employeeModel").getSecurityToken()
+            });
+            oUploadCollection.addHeaderParameter(oCustomerHeaderToken);
 
         };
 
         function onEmployeeFileBeforeUploadStart(oEvent) {
-            let fileName = oEvent.getParameter("fileName");
-            let objContext = oEvent.getSource().getBindingContext("employeeModel").getObject();
             let oCustomerHeaderSlug = new sap.m.UploadCollectionParameter({
                 name: "slug",
-                value: this.getOwnerComponent().SapId + ";" + this.newEmployeeId +";" + oEvent.getParameter("fileName")
+                value: this.getOwnerComponent().SapId + ";" + this.newEmployeeId + ";" + oEvent.getParameter("fileName")
             });
             oEvent.getParameters().addHeaderParameter(oCustomerHeaderSlug);
         };
 
         function onEmployeeFileBeforeUploadCompleted(oEvent) {
-            
+
         };
         function onEmployeeFileDeleted(oEvent) {
 
         };
 
-        //Función generica para editar un step
         function _editStep(step) {
             var navContainer = this.byId("navContainer");
-            //Se añade un función al evento afterNavigate, ya que se necesita 
-            //que la función se ejecute una vez ya se haya navegado a la vista principal
+
             var fnAfterNavigate = function () {
-                this.byId("NewEmployeeWizard").goToStep(this.byId(step));
-                //Se quita la función para que no vuelva a ejecutar al volver a nevagar
+                var wizard = this.byId("NewEmployeeWizard");
+                wizard.goToStep(this.byId(step));
                 navContainer.detachAfterNavigate(fnAfterNavigate);
             }.bind(this);
 
@@ -247,8 +253,44 @@ sap.ui.define([
         };
 
         function onSaveNewEmployee(oEvent) {
+            var oResourceModel = this.getView().getModel("i18n").getResourceBundle();
+            var json = this.getView().getModel().getData();
+            var body = {
+                SapId: this.getOwnerComponent().SapId,
+                Type: json.Type,
+                FirstName: json.FirstName,
+                LastName: json.LastName,
+                Dni: json.Dni,
+                CreationDate: json.CreationDate,
+                Comments: json.Comments,
+                UserToSalary: [{
+                    Ammount: parseFloat(json._objEmployeeData.EmployeeSalary).toString(),
+                    Comments: json.Comments,
+                    Waers: "EUR"
+                }]
+            };
+            this.getView().getModel().create("/Users", body, {
+                success: function (data) {
+                    this.newEmployeeId = data.EmployeeId;
+                    sap.m.MessageBox.information(oResourceModel.getText("NewEmployeeSaved") + ": " + this.newEmployeeId, {
+                        onClose: function () {
+                            var wizardNavContainer = this.byId("wizardNavContainer");
+                            wizardNavContainer.back();
+                            var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+                            oRouter.navTo("menu", {}, true);
+                        }.bind(this)
+                    });
 
+                    this.byId("UploadCollection").upload();
+
+                }.bind(this),
+                error: function () {
+
+                }.bind(this)
+            });
         };
+
+
 
         var NewEmployee = Controller.extend("EmployeeManager.employeemanager.controller.NewEmployee", {});
 
@@ -259,11 +301,11 @@ sap.ui.define([
         NewEmployee.prototype.onCheckDNI = onCheckDNI;
         NewEmployee.prototype.dataEmployeeCheck = dataEmployeeCheck;
         NewEmployee.prototype.EmployeeWizardCompletedHandler = EmployeeWizardCompletedHandler;
-        NewEmployee.prototype.onEditEmployeeTypeStep = onEditEmployeeTypeStep;
         NewEmployee.prototype.onEmployeeFileChange = onEmployeeFileChange;
         NewEmployee.prototype.onEmployeeFileBeforeUploadStart = onEmployeeFileBeforeUploadStart;
         NewEmployee.prototype.onEmployeeFileBeforeUploadCompleted = onEmployeeFileBeforeUploadCompleted;
         NewEmployee.prototype.onEmployeeFileDeleted = onEmployeeFileDeleted;
+        NewEmployee.prototype.onEditEmployeeTypeStep = onEditEmployeeTypeStep;
         NewEmployee.prototype.onEditEmployeeDataStep = onEditEmployeeDataStep;
         NewEmployee.prototype.onEditEmployeeAditionalDataStep = onEditEmployeeAditionalDataStep;
         NewEmployee.prototype.onSaveNewEmployee = onSaveNewEmployee;

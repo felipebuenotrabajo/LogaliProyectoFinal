@@ -15,9 +15,9 @@
             <Text text="{/FirstName}"/>
             <Label text="{i18n>employeeLastName}"/>
             <Text text="{/LastName}"/>
-            <Label text="{= ${/_objEmployeeData/EmployeeType} === 'extern' ? ${i18n>employeeCIF} : ${i18n>employeeDNI}}"/>
+            <Label text="{= ${/_objEmployeeData/EmployeeType} === 'external' ? ${i18n>employeeCIF} : ${i18n>employeeDNI}}"/>
             <Text text="{/Dni}"/>
-            <Label text="{= ${/_objEmployeeData/EmployeeType} === 'extern' ? ${i18n>employeeExternalSalary} : ${i18n>employeeInternaManagerlSalary}}"/>
+            <Label text="{= ${/_objEmployeeData/EmployeeType} === 'external' ? ${i18n>employeeExternalSalary} : ${i18n>employeeInternaManagerlSalary}}"/>
             <Text text="{/_objEmployeeData/EmployeeSalary}"/>
             <Label text="{i18n>employeeCreationDate}"/>
             <Text text="{path:'/CreationDate',type:'sap.ui.model.type.Date'}"/>
@@ -30,9 +30,9 @@
             <Label text="{i18n>EmployeeComment}"/>
             <Text text="{/Comments}"/>
             <Label text="{i18n>EmployeeReviewDocuments}"/>
-            <Text text="{= ${/_nFiles} === '1' ? ${i18n>EmployeeReviewfile} : ${i18n>EmployeeReviewfiles}}"/>
+            <Text text=" {/_nFiles} {= ${/_nFiles} === 1 ? ${i18n>EmployeeReviewfile} : ${i18n>EmployeeReviewfiles}}"/>
             <Label></Label>
-            <List items="{/_files}">
+            <List items="{/_arrayFiles}">
                 <items>
                     <StandardListItem title="{DocName}"></StandardListItem>
                 </items>
