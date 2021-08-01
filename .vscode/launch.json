@@ -15,7 +15,7 @@
         "--",
         "--ui5",
         "--backendConfig",
-        "[{\"path\":\"/sap\",\"destination\":\"logaligroupERP\"}] "
+        "[{\"path\":\"/sap\",\"destination\":\"logaligroupERP\"}]"
       ],
       "windows": {
         "runtimeExecutable": "npm.cmd",
@@ -23,7 +23,7 @@
           "--",
           "--ui5",
           "--backendConfig",
-          "\"[{\\\"path\\\":\\\"/sap\\\",\\\"destination\\\":\\\"logaligroupERP\\\"}]\" "
+          "\"[{\\\"path\\\":\\\"/sap\\\",\\\"destination\\\":\\\"logaligroupERP\\\"}]\""
         ]
       },
       "console": "internalConsole",
