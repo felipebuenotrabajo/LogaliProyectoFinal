@@ -107,6 +107,13 @@
                     "target": [
                         "TargetNewEmployee"
                     ]
+                },
+                {
+                    "name": "RouteShowEmployees",
+                    "pattern": "RouteShowEmployees",
+                    "target": [
+                        "TargetShowEmployees"
+                    ]
                 }
             ],
             "targets": {
@@ -123,6 +130,13 @@
                     "clearControlAggregation": true,
                     "viewId": "NewEmployee",
                     "viewName": "NewEmployee"
+                },
+                "TargetShowEmployees": {
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": true,
+                    "viewId": "ShowEmployees",
+                    "viewName": "ShowEmployees"
                 }
             }
         }

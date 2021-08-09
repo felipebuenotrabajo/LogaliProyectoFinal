@@ -66,7 +66,7 @@
                                     <Label text="{i18n>EmployeeComment}" width="100%"></Label>
                                     <TextArea value="{/Comments}" width="100%"></TextArea>
                                     <UploadCollection id="UploadCollection" maximumFilenameLength="55" maximumFileSize="10" multiple="true" sameFilenameAllowed="true" instantUpload="false" uploadUrl="/sap/opu/odata/sap/ZEMPLOYEES_SRV/Attachments" 
-                                                    change="onEmployeeFileChange" uploadComplete="onEmployeeFileBeforeUploadCompleted" beforeUploadStarts="onEmployeeFileBeforeUploadStart" fileDeleted="onEmployeeFileDeleted" 
+                                                    change="onEmployeeFileChange" uploadComplete="onEmployeeFileUploadCompleted" beforeUploadStarts="onEmployeeFileBeforeUploadStart" fileDeleted="onEmployeeFileDeleted" 
                                                     noDataDescription="{i18n>fileUploadFile}" />
                                 </WizardStep>
                             </Wizard>
