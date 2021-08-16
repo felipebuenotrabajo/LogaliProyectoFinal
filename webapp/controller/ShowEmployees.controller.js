@@ -44,8 +44,6 @@ sap.ui.define([
             detailEmployee.bindElement("employeeModel>/Users(EmployeeId='" + this.EmployeeId + "',SapId='" + this.getOwnerComponent().SapId + "')");
 
             this._onObjectMached(oEvent);
-            // var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-            // oRouter.getRoute("RouteShowEmployees").attachPatternMatched(_onObjectMached, this);
 
         };
 
@@ -90,87 +88,76 @@ sap.ui.define([
         };
 
         function onPromoteEmployee() {
-            var i18nText = this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeTitle");
-            var oPage = new sap.m.Page({
-                title: i18nText,
-            });
 
-            i18nText = this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeOK");
-            var oButtonOk = new sap.m.Button("Save", {
-                text: i18nText,
-                tap: [this.Save, this]
-            });
-            i18nText = this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeOK");
-            var oButtonCancel = new sap.m.Button("Cancel", {
-                text: "i18nText",
-                tap: [this.Cancel, this]
-            });
-            i18nText = this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeOK");
-            var i18nTextSalary = this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeSalary");
-            var i18nTextDate = this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeDate");
-            var i18nTextComments = this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeComments");
+            if (!sap.ui.getCore().byId("ButtonSavePromote")) {
+                var oButtonOk = new sap.m.Button("ButtonSavePromote", {
+                    text: this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeOK"),
+                    tap: [this.employeePromoteSave, this]
+                });
+            };
 
-            var oDialog = new sap.m.Dialog("Dialog1", {
-                title: "promoteEmployeeTitle",
-                modal: true,
-                contentWidth: "1em",
-                buttons: [oButtonOk, oButtonCancel],
-                content: [
-                    new sap.m.Label({ text: i18nTextSalary }),
-                    new sap.m.Input({
-                        maxLength: 20,
-                        id: "EmployeePromoteSalary"
-                    }),
-                    new sap.m.Label({ text: i18nTextDate }),
-                    new sap.m.Input({
-                        maxLength: 20,
-                        id: "EmployeePromoteDate"
-                    }),
-                    new sap.m.Label({ text: i18nTextComments }),
-                    new sap.m.Input({
-                        maxLength: 3,
-                        id: "EmployeePromoteComments"
-                    }),
-                ]
-            });
+            if (!sap.ui.getCore().byId("ButtonCancelPromote")) {
+                var oButtonCancel = new sap.m.Button("ButtonCancelPromote", {
+                    text: this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeCancel"),
+                    tap: [this.employeePromoteCancel, this]
+                });
+            };
 
-            sap.ui.getCore().byId("Dialog1").open();
+            if (!sap.ui.getCore().byId("DialogPromoteEmployee")) {
+                var oDialog = new sap.m.Dialog("DialogPromoteEmployee", {
+                    title: this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeTitle"),
+                    // modal: true,
+                    contentWidth: "1em",
+                    buttons: [oButtonOk, oButtonCancel],
+                    content: [
+                        new sap.m.Label({ text: this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeSalary") }),
+                        new sap.m.Input({
+                            maxLength: 20,
+                            id: "EmployeePromoteSalary"
+                        }),
 
+                        new sap.m.Label({ text: this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeDate") }),
+                        new sap.m.DateTimePicker({ id: "EmployeePromoteDate" }),
+
+                        new sap.m.Label({ text: this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeComments") }),
+                        new sap.m.TextArea({
+                            maxLength: 50,
+                            id: "EmployeePromoteComments"
+                        }),
+                    ]
+                });
+                oDialog.addStyleClass("sapUiContentPadding");
+            };
+            sap.ui.getCore().byId("DialogPromoteEmployee").open();
         };
 
-        function Cancel() {
+        function employeePromoteCancel() {
 
-            sap.ui.getCore().byId("Dialog1").close();
+            sap.ui.getCore().byId("DialogPromoteEmployee").close();
+        };
 
-        }
+        function employeePromoteSave() {
 
-        function Save() {
-            i18nTextSalary = this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeSalary");
-            i18nTextDate = this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeDate");
-            i18nTextComments = this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeComments");
+            sap.ui.getCore().byId("DialogPromoteEmployee").close();
 
-            sap.ui.getCore().byId("Dialog1").close();
+            var employeePromoteSalary = sap.ui.getCore().byId("EmployeePromoteSalary").getValue();
 
-            var employeePromoteSalary = sap.ui.getCore().byId(promoteEmployeeSalary).getValue();
+            var employeePromoteDate = sap.ui.getCore().byId("EmployeePromoteDate").getDateValue();
 
-            var employeePromoteDate = sap.ui.getCore().byId().getValue(promoteEmployeeDate);
-
-            var employeePromoteComments = sap.ui.getCore().byId(promoteEmployeeComments).getValue();
-
-            this.riseDialog.setModel(new sap.ui.model.json.JSONModel({}), "newRise");
+            var employeePromoteComments = sap.ui.getCore().byId("EmployeePromoteComments").getValue();
 
             if (!this.promotedEmployee) {
-                this.promotedEmployee.setModel(new sap.ui.model.json.JSONModel({
+                this.promotedEmployee = new sap.ui.model.json.JSONModel({});
+                this.getView().setModel(new sap.ui.model.json.JSONModel({
                     Ammount: employeePromoteSalary,
                     CreationDate: employeePromoteDate,
                     Comments: employeePromoteComments,
                 }), "newPromoteEmployee");
-                var newRise = this.riseDialog.getModel("newRise");
-                var odata = newRise.getData();
+                var promotedEmployee = this.getView().getModel("newPromoteEmployee");
                 var body = {
-                    Ammount: odata.Ammount,
-                    CreationDate: odata.CreationDate,
-                    Comments: odata.Comments,
+                    Ammount: promotedEmployee.getData().Ammount,
+                    CreationDate: promotedEmployee.getData().CreationDate,
+                    Comments: promotedEmployee.getData().Comments,
                     SapId: this.getOwnerComponent().SapId,
                     EmployeeId: this.employeeId
                 };
@@ -194,6 +181,8 @@ sap.ui.define([
         Main.prototype.onGetFireEmployee = onGetFireEmployee;
         Main.prototype.onPromoteEmployee = onPromoteEmployee;
         Main.prototype._onObjectMached = _onObjectMached;
+        Main.prototype.employeePromoteSave = employeePromoteSave;
+        Main.prototype.employeePromoteCancel = employeePromoteCancel;
 
         return Main;
     });
