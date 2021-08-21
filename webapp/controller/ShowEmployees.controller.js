@@ -34,6 +34,7 @@ sap.ui.define([
 
 
         function onInit() {
+            this.EmployeeId = "";
         };
 
         function onSelectEmployee(oEvent) {
@@ -72,11 +73,11 @@ sap.ui.define([
                     operator: FilterOperator.Contains,
                     value1: sQuery,
                 });
-                filters.push(filter2);                
+                filters.push(filter2);
             };
-                var oList = this.getView().byId("EmployeeList");
-                var oBinding = oList.getBinding("items");
-                oBinding.filter(new Filter ({filters: filters, and: false}));
+            var oList = this.getView().byId("EmployeeList");
+            var oBinding = oList.getBinding("items");
+            oBinding.filter(new Filter({ filters: filters, and: false }));
         };
 
         function onGetFireEmployee(oEvent) {
@@ -186,7 +187,6 @@ sap.ui.define([
             });
         }
 
-
         var Main = Base.extend("EmployeeManager.employeemanager.controller.ShowEmployees", {});
 
         Main.prototype.onInit = onInit;
@@ -197,6 +197,7 @@ sap.ui.define([
         Main.prototype._onObjectMached = _onObjectMached;
         Main.prototype.employeePromoteSave = employeePromoteSave;
         Main.prototype.employeePromoteCancel = employeePromoteCancel;
+        // Main.prototype.onPressBackMenu = onPressBackMenu;
 
         return Main;
     });

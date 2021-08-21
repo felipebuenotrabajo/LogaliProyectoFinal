@@ -1,10 +1,12 @@
 sap.ui.define([
-    "sap/ui/core/mvc/Controller"
+    "sap/ui/core/mvc/Controller",
+    "sap/ui/core/routing/History"
 ],
 	/**
 	 * @param {typeof sap.ui.core.mvc.Controller} Controller
+	 * @param {typeof sap.ui.core.routing.History} History
 	 */
-    function (Controller) {
+    function (Controller, History) {
         "use strict";
 
         function onInit() {
@@ -22,10 +24,17 @@ sap.ui.define([
         };
 
         function onPressBackMenu() {
-            var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-            oRouter.navTo("RouteMenu", {}, true);
-        };
+            var oHistory = History.getInstance();
+            var sPreviousHash = oHistory.getPreviousHash();
 
+            if (sPreviousHash !== undefined) {
+                window.history.go(-1);
+            } else {
+                var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+                oRouter.navTo("RouteMenu", {}, true);
+            }
+
+        };
 
         function onEmployeeFileChange(oEvent) {
             let oUploadCollection = oEvent.getSource();
@@ -58,7 +67,16 @@ sap.ui.define([
         };
 
         function onEmployeeFileDeleted(oEvent) {
+            var oUploadCollection = oEvent.getSource();
+            var sPath = oEvent.getParameter("item").getBindingContext("employeeModel").getPath();
+            this.getView().getModel("employeeModel").remove(sPath, {
+                success: function () {
+                    oUploadCollection.getBinding("items").refresh();
+                },
+                error: function () {
 
+                }
+            });
         };
 
 
