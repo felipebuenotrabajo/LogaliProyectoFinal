@@ -34,7 +34,9 @@ sap.ui.define([
             MessageBox.confirm(this.getView().getModel("i18n").getResourceBundle().getText("NewEmployeeConfirmCancel"), {
                 onClose: function (oAction) {
                     if (oAction === "OK") {
-                        this.onPressBackMenu();
+                        var navContainer = this.byId("navContainer");
+                        navContainer.to(navContainer.getPages()[0].getId());
+                        // this.onPressBackMenu();
                         // var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
                         // oRouter.navTo("RouteMenu", {}, true);
                         // var oHistory = History.getInstance();

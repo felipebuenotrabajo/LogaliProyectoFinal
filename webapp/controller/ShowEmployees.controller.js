@@ -15,6 +15,8 @@ sap.ui.define([
             var oContext = oEvent.getParameter("listItem").getBindingContext("employeeModel").getObject();
             var employeeID = oContext.EmployeeId;
 
+            // this.byId("SplitEmployee").to(this.createId("detailMainEmployee"));
+
             this.byId("UploadCollection").bindAggregation("items", {
                 path: "employeeModel>/Attachments",
                 filters: [
@@ -50,38 +52,48 @@ sap.ui.define([
         function onSearchEmployee(oEvent) {
             var sQuery = oEvent.getSource().getValue();
             var filters = [];
-            if (sQuery && sQuery.length > 0) {
-                var filter = new Filter("FirstName", FilterOperator.Contains, sQuery);
-                filters.push(filter);
-            }
-            if (sQuery && sQuery.length > 0) {
-                var filter = new Filter("LastName", FilterOperator.Contains, sQuery);
-                filters.push(filter);
-            }
-            if (sQuery && sQuery.length > 0) {
-                var filter = new Filter("EmployeeId", FilterOperator.Contains, sQuery);
-                filters.push(filter);
-            }
+            if (sQuery) {
+                // var filter1 = new Filter("LastName", FilterOperator.Contains, sQuery);
+                // filters.push(filter1);
 
-            var oList = this.getView().byId("EmployeeList");
-            var oBinding = oList.getBinding("items");
-            oBinding.filter(filters);
+                // var filter1 = new Filter([
+                // 	new Filter("FirstName", FilterOperator.Contains, sQuery),
+                // 	new Filter("LastName", FilterOperator.Contains, sQuery)
+                // ], false); 
+                // filters.push(filter1);  
+                var filter1 = new Filter({
+                    path: "FirstName",
+                    operator: FilterOperator.Contains,
+                    value1: sQuery,
+                });
+                filters.push(filter1);
+                var filter2 = new Filter({
+                    path: "LastName",
+                    operator: FilterOperator.Contains,
+                    value1: sQuery,
+                });
+                filters.push(filter2);                
+            };
+                var oList = this.getView().byId("EmployeeList");
+                var oBinding = oList.getBinding("items");
+                oBinding.filter(new Filter ({filters: filters, and: false}));
         };
 
-        function onGetFireEmployee() {
+        function onGetFireEmployee(oEvent) {
             sap.m.MessageBox.confirm(this.getView().getModel("i18n").getResourceBundle().getText("showEmployeeConfirmDelete"), {
                 onClose: function (oAction) {
                     if (oAction === "OK") {
-                        var employeePath = "/Users(EmployeeId='" + this.EmployeeId + "',SapId='" + this.getOwnerComponent().SapId + "')".
-                            this.getView().getModel("employeeModel").remove(employeePath, {
-                                success: function (data) {
-                                    sap.m.MessageToast.show(this.getView().getModel("i18n").getResourceBundle().getText("showEmployeeDeleted"));
-                                    this.byId("SplitEmployee").to(this.createId("detailEmployee"));
-                                }.bind(this),
-                                error: function () {
-                                    sap.m.MessageToast.show(this.getView().getModel("i18n").getResourceBundle().getText("showEmployeeErrorDeleted"));
-                                }.bind(this)
-                            });
+                        var employeePath = "/Users(EmployeeId='" + this.EmployeeId + "',SapId='" + this.getOwnerComponent().SapId + "')";
+                        var oSalary = this.getView().getModel("newPromoteEmployee");
+                        this.getView().getModel("employeeModel").remove(employeePath, {
+                            success: function (data) {
+                                sap.m.MessageToast.show(this.getView().getModel("i18n").getResourceBundle().getText("showEmployeeDeleted"));
+                                this.byId("SplitEmployee").to(this.createId("detailEmployee"));
+                            }.bind(this),
+                            error: function () {
+                                sap.m.MessageToast.show(this.getView().getModel("i18n").getResourceBundle().getText("showEmployeeErrorDeleted"));
+                            }.bind(this),
+                        });
                     }
                 }.bind(this)
             });
@@ -132,7 +144,9 @@ sap.ui.define([
         };
 
         function employeePromoteCancel() {
-
+            sap.ui.getCore().byId("EmployeePromoteSalary").setValue();
+            sap.ui.getCore().byId("EmployeePromoteDate").setValue();
+            sap.ui.getCore().byId("EmployeePromoteComments").setValue();
             sap.ui.getCore().byId("DialogPromoteEmployee").close();
         };
 
@@ -141,37 +155,37 @@ sap.ui.define([
             sap.ui.getCore().byId("DialogPromoteEmployee").close();
 
             var employeePromoteSalary = sap.ui.getCore().byId("EmployeePromoteSalary").getValue();
-
             var employeePromoteDate = sap.ui.getCore().byId("EmployeePromoteDate").getDateValue();
-
             var employeePromoteComments = sap.ui.getCore().byId("EmployeePromoteComments").getValue();
 
-            if (!this.promotedEmployee) {
-                this.promotedEmployee = new sap.ui.model.json.JSONModel({});
-                this.getView().setModel(new sap.ui.model.json.JSONModel({
-                    Ammount: employeePromoteSalary,
-                    CreationDate: employeePromoteDate,
-                    Comments: employeePromoteComments,
-                }), "newPromoteEmployee");
-                var promotedEmployee = this.getView().getModel("newPromoteEmployee");
-                var body = {
-                    Ammount: promotedEmployee.getData().Ammount,
-                    CreationDate: promotedEmployee.getData().CreationDate,
-                    Comments: promotedEmployee.getData().Comments,
-                    SapId: this.getOwnerComponent().SapId,
-                    EmployeeId: this.employeeId
-                };
-                this.getView().getModel("employeeModel").create("/Salaries", body, {
-                    success: function () {
-                        sap.m.MessageToast.show(this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeSavedOk"));
-                    }.bind(this),
-                    error: function () {
-                        sap.m.MessageToast.show(this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeSavedKO"));
-                    }.bind(this)
-                });
-            }
+            sap.ui.getCore().byId("EmployeePromoteSalary").setValue();
+            sap.ui.getCore().byId("EmployeePromoteDate").setValue();
+            sap.ui.getCore().byId("EmployeePromoteComments").setValue();
 
+            this.promotedEmployee = new sap.ui.model.json.JSONModel({});
+            this.getView().setModel(new sap.ui.model.json.JSONModel({
+                Ammount: employeePromoteSalary,
+                CreationDate: employeePromoteDate,
+                Comments: employeePromoteComments,
+            }), "newPromoteEmployee");
+            var promotedEmployee = this.getView().getModel("newPromoteEmployee");
+            var body = {
+                Ammount: promotedEmployee.getData().Ammount,
+                CreationDate: promotedEmployee.getData().CreationDate,
+                Comments: promotedEmployee.getData().Comments,
+                SapId: this.getOwnerComponent().SapId,
+                EmployeeId: this.EmployeeId
+            };
+            this.getView().getModel("employeeModel").create("/Salaries", body, {
+                success: function () {
+                    sap.m.MessageToast.show(this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeSavedOk"));
+                }.bind(this),
+                error: function () {
+                    sap.m.MessageToast.show(this.getView().getModel("i18n").getResourceBundle().getText("promoteEmployeeSavedKO"));
+                }.bind(this)
+            });
         }
+
 
         var Main = Base.extend("EmployeeManager.employeemanager.controller.ShowEmployees", {});
 

@@ -4,7 +4,7 @@
     <f:SimpleForm title="1. {i18n>employeeTypeTitle}" minWidth="1024" editable="false" layout="ResponsiveGridLayout">
         <f:content>
             <Label text="{i18n>EmployeeReviewType}"/>
-            <Text text="{=${/_objEmployeeData/EmployeeType} === 'intern' ? ${i18n>buttonEmployeeTypeInternal} : ${/_objEmployeeData/EmployeeType} === 'extern' ? ${i18n>buttonEmployeeTypeExternal} : ${i18n>buttonEmployeeTypeManager}}"/>
+            <Text text="{=${/_objEmployeeData/EmployeeType} === 'internal' ? ${i18n>buttonEmployeeTypeInternal} : ${/_objEmployeeData/EmployeeType} === 'external' ? ${i18n>buttonEmployeeTypeExternal} : ${i18n>buttonEmployeeTypeManager}}"/>
             <Link press="onEditEmployeeTypeStep" text="{i18n>EmployeeReviewEdit}" />
         </f:content>
     </f:SimpleForm>

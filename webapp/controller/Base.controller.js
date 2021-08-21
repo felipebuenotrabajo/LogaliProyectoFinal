@@ -48,7 +48,7 @@ sap.ui.define([
         };
 
         function onEmployeeFileUploadCompleted(oEvent) {
-            oEvent.getSource().getBinding("items").refresh();
+            // oEvent.getSource().getBinding("items").refresh();
         };
 
         function onEmployeeFileDownload(oEvent) {

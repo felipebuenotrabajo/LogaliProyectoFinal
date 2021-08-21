@@ -60,7 +60,7 @@
                 </Toolbar>
                 <List id="EmployeeList" itemPress="onSelectEmployee" items="{path:'employeeModel>/Users',filters:[{path:'SapId',operator:'EQ',value1:'pipegood@gmail.com'}]}">
                     <items>
-                        <StandardListItem id="EmployeeStList" title="{employeeModel>FirstName} {employeeModel>LastName}" description="{employeeModel>Dni}" type="Active"/>
+                        <StandardListItem title="{employeeModel>FirstName} {employeeModel>LastName}" description="{employeeModel>Dni}" type="Active"/>
                     </items>
                 </List>
             </Page>
