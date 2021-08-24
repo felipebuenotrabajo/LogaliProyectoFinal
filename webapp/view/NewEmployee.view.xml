@@ -60,13 +60,12 @@
                                 </WizardStep>
 
                                 <!-- Step 3 Employee AdditionalData -->
-
                                 <WizardStep id="employeeAditionalDataStep" title="{i18n>employeeAditionalDataTitle}" validated="true">
                                     <MessageStrip class="sapUiSmallMarginBottom" text="{i18n>employeeAdditionalDataHeader}" showIcon="true"/>
                                     <Label text="{i18n>EmployeeComment}" width="100%"></Label>
                                     <TextArea value="{/Comments}" width="100%"></TextArea>
                                     <UploadCollection id="UploadCollection" maximumFilenameLength="55" maximumFileSize="10" multiple="true" sameFilenameAllowed="true" instantUpload="false" uploadUrl="/sap/opu/odata/sap/ZEMPLOYEES_SRV/Attachments" 
-                                                    change="onEmployeeFileChange" uploadComplete="onEmployeeFileUploadCompleted" beforeUploadStarts="onEmployeeFileBeforeUploadStart" fileDeleted="onEmployeeFileDeleted" 
+                                                    change="onEmployeeFileChange"  beforeUploadStarts="onEmployeeFileBeforeUploadStart" fileDeleted="onEmployeeFileDeleted" 
                                                     noDataDescription="{i18n>fileUploadFile}" />
                                 </WizardStep>
                             </Wizard>

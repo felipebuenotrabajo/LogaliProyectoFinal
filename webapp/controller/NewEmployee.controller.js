@@ -43,15 +43,7 @@ sap.ui.define([
                             var wizardStep = wizard.getSteps()[i];
                             wizardStep.setValidated(false);
                             wizard.discardProgress(wizardStep);
-
                         };
-
-                        // var oUploadCollection = this.byId("UploadCollection");
-                        // oUploadCollection.removeAllItems();
-                        // oUploadCollection.destroyItems();                        
-
-                        // var cntrlStep1 = this.byId("employeeTypeStep");
-                        // this.byId("NewEmployeeWizard").goToStep(cntrlStep1);
                         var navContainer = this.byId("navContainer");
                         navContainer.to(navContainer.getPages()[0].getId());
                         this.onPressBackMenu();                 
@@ -257,8 +249,8 @@ sap.ui.define([
             };
             this.getView().getModel("employeeModel").create("/Users", body, {
                 success: function (data) {
-                    this.newEmployeeId = data.EmployeeId;
-                    sap.m.MessageBox.information(oResourceModel.getText("NewEmployeeSaved") + ": " + this.newEmployeeId, {
+                    this.EmployeeId = data.EmployeeId;
+                    sap.m.MessageBox.information(oResourceModel.getText("NewEmployeeSaved") + ": " + this.EmployeeId, {
                         onClose: function () {
                             var navContainer = this.byId("navContainer");
                             navContainer.back();
@@ -274,7 +266,6 @@ sap.ui.define([
                 }.bind(this)
             });
         };
-
 
 
         var NewEmployee = Base.extend("EmployeeManager.employeemanager.controller.NewEmployee", {});

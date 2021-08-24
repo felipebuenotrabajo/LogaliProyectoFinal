@@ -1,40 +1,47 @@
 sap.ui.define([
     "EmployeeManager/employeemanager/controller/Base.controller",
     "sap/ui/model/Filter",
-    "sap/ui/model/FilterOperator"
+    "sap/ui/model/FilterOperator",
+    "sap/ui/model/FilterType"
 ],
 	/**
 	 * @param {typeof EmployeeManager.employeemanager.controller} Base
 	 * @param {typeof sap.ui.model.Filter} Filter
 	 * @param {typeof sap.ui.model.FilterOperator} FilterOperator
+     * @param {typeof sap.ui.model.FilterType} FilterType
+
 	 */
-    function (Base, Filter, FilterOperator) {
+    function (Base, Filter, FilterOperator, FilterType) {
         "use strict";
 
         function _onObjectMached(oEvent) {
-            var oContext = oEvent.getParameter("listItem").getBindingContext("employeeModel").getObject();
-            var employeeID = oContext.EmployeeId;
+            // this.byId("UploadCollection").bindAggregation("items", {
+            //     path: "employeeModel>/Attachments",
+            //     filters: [
+            //         new Filter("SapId", FilterOperator.EQ, this.getOwnerComponent().SapId),
+            //         new Filter("EmployeeId", FilterOperator.EQ, this.EmployeeId),
+            //     ],
+            //     template: new sap.m.UploadCollectionItem({
+            //         documentId: "{employeeModel>AttId}",
+            //         visibleEdit: false,
+            //         fileName: "{employeeModel>DocName}"
+            //     }).attachPress(this.onEmployeeFileDownload)
 
-            // this.byId("SplitEmployee").to(this.createId("detailMainEmployee"));
-
-            this.byId("UploadCollection").bindAggregation("items", {
-                path: "employeeModel>/Attachments",
-                filters: [
-                    new Filter("SapId", FilterOperator.EQ, this.getOwnerComponent().SapId),
-                    new Filter("EmployeeId", FilterOperator.EQ, employeeID),
-                ],
-                template: new sap.m.UploadCollectionItem({
-                    documentId: "{employeeModel>AttId}",
-                    visibleEdit: false,
-                    fileName: "{employeeModel>DocName}"
-                }).attachPress(this.onEmployeeFileDownload)
-
-            });
+            // });
         };
-
-
-        function onInit() {
+        function onBeforeRendering() {
+            var oView = this.getView();
+            var oJSONModelEmpl = new sap.ui.model.json.JSONModel({});
+            oView.setModel(oJSONModelEmpl);
+            var detailEmployee = this.byId("detailEmployee");
+            detailEmployee.unbindElement("employeeModel>/Users(EmployeeId='" + this.EmployeeId + "',SapId='" + this.getOwnerComponent().SapId + "')");
             this.EmployeeId = "";
+            var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+            oRouter.getRoute("RouteShowEmployees").attachPatternMatched(_onObjectMached, this);
+        };
+        function onInit() {
+
+
         };
 
         function onSelectEmployee(oEvent) {
@@ -46,38 +53,38 @@ sap.ui.define([
             //Concatenamos el id de empleado con el mail de usuario
             detailEmployee.bindElement("employeeModel>/Users(EmployeeId='" + this.EmployeeId + "',SapId='" + this.getOwnerComponent().SapId + "')");
 
-            this._onObjectMached(oEvent);
+            //Bind files
+            this.byId("UploadCollection").bindAggregation("items", {
+                path: "employeeModel>/Attachments",
+                filters: [
+                    new Filter("SapId", FilterOperator.EQ, this.getOwnerComponent().SapId),
+                    new Filter("EmployeeId", FilterOperator.EQ, this.EmployeeId),
+                ],
+                template: new sap.m.UploadCollectionItem({
+                    documentId: "{employeeModel>AttId}",
+                    visibleEdit: false,
+                    fileName: "{employeeModel>DocName}"
+                }).attachPress(this.onEmployeeFileDownload)
 
+            });
         };
 
         function onSearchEmployee(oEvent) {
             var sQuery = oEvent.getSource().getValue();
             var filters = [];
             if (sQuery) {
-                // var filter1 = new Filter("LastName", FilterOperator.Contains, sQuery);
-                // filters.push(filter1);
 
-                // var filter1 = new Filter([
-                // 	new Filter("FirstName", FilterOperator.Contains, sQuery),
-                // 	new Filter("LastName", FilterOperator.Contains, sQuery)
-                // ], false); 
-                // filters.push(filter1);  
-                var filter1 = new Filter({
-                    path: "FirstName",
-                    operator: FilterOperator.Contains,
-                    value1: sQuery,
-                });
+                var filter1 = new Filter([
+                    new Filter("FirstName", FilterOperator.Contains, sQuery),
+                    // new Filter("LastName", FilterOperator.Contains, sQuery),
+                ], false);
                 filters.push(filter1);
-                var filter2 = new Filter({
-                    path: "LastName",
-                    operator: FilterOperator.Contains,
-                    value1: sQuery,
-                });
-                filters.push(filter2);
             };
+
+
             var oList = this.getView().byId("EmployeeList");
             var oBinding = oList.getBinding("items");
-            oBinding.filter(new Filter({ filters: filters, and: false }));
+            oBinding.filter(filters, false);
         };
 
         function onGetFireEmployee(oEvent) {
@@ -197,7 +204,7 @@ sap.ui.define([
         Main.prototype._onObjectMached = _onObjectMached;
         Main.prototype.employeePromoteSave = employeePromoteSave;
         Main.prototype.employeePromoteCancel = employeePromoteCancel;
-        // Main.prototype.onPressBackMenu = onPressBackMenu;
+        Main.prototype.onBeforeRendering = onBeforeRendering;
 
         return Main;
     });

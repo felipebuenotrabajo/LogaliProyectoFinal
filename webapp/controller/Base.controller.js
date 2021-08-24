@@ -51,13 +51,13 @@ sap.ui.define([
         function onEmployeeFileBeforeUploadStart(oEvent) {
             let oCustomerHeaderSlug = new sap.m.UploadCollectionParameter({
                 name: "slug",
-                value: this.getOwnerComponent().SapId + ";" + this.newEmployeeId + ";" + oEvent.getParameter("fileName")
+                value: this.getOwnerComponent().SapId + ";" + this.EmployeeId + ";" + oEvent.getParameter("fileName")
             });
             oEvent.getParameters().addHeaderParameter(oCustomerHeaderSlug);
         };
 
         function onEmployeeFileUploadCompleted(oEvent) {
-            // oEvent.getSource().getBinding("items").refresh();
+             oEvent.getSource().getBinding("items").refresh();
         };
 
         function onEmployeeFileDownload(oEvent) {

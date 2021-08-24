@@ -21,7 +21,8 @@
                     <items>
                         <IconTabFilter text="{i18n>ShowEmployeesDetailsFiles}" design="Horizontal" icon="sap-icon://attachment">
                             <UploadCollection id="UploadCollection" maximumFilenameLength="55" maximumFileSize="10" multiple="true"
-                                                                    sameFilenameAllowed="true" instantUpload="true" uploadUrl="/sap/opu/odata/sap/ZEMPLOYEES_SRV/Attachments" items="{employeeModel>UserToAttachment}"
+                                                                    sameFilenameAllowed="true" instantUpload="true" uploadUrl="/sap/opu/odata/sap/ZEMPLOYEES_SRV/Attachments"
+                                                                    items="{path:'employeeModel>UserToAttachment'}"
                                                                     change="onEmployeeFileChange" uploadComplete="onEmployeeFileUploadCompleted" beforeUploadStarts="onEmployeeFileBeforeUploadStart"
                                                                     fileDeleted="onEmployeeFileDeleted" noDataDescription="{i18n>fileUploadFile}">
                                 <items>
